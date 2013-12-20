@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>Kijubi</title>
+<link href="templates/searchresult.mustache" rel="template" id="searchTemplate"/>
+<link media="all" href="css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<script type="text/javascript" src="phonegap.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/localConfig.js"></script>
+<script type="text/javascript" src="js/mustache.js"></script>
+
+
+
+<h1>What Kijubi Doing?</h1>
+<input type="text" id="search"><input type="submit" onclick="PerformSearch()">
+<br>
+<hr>
+<script  type="text/javascript" >
+
+function PerformSearch()
+{
+  try
+  {
+    $("#Results").html('');
+
+    var term = $('#search').val();
+
+    $.ajax({
+        type: "GET",
+        url: "https://api.kijubi.com/api/products?accesstoken=" + accessToken + "&term=" + term + "&parameterNames=null&parameterValues=null&startPrice=0&endPrice=1000&pageNumber=1&pageSize=25&sortType=1",
+        data: "{}",
+        dataType: "json",
+        success: function(response) {
+          	for(x=0;x<response.Products.length;x++)
+            {
+              var existingResults = $('#Results').html();
+              var html = Mustache.to_html($("#SearchResult").html(), response.Products[x]);
+              $("#Results").html(existingResults + html);
+           }
+        },
+        error: function()
+        {
+           alert("Error!");
+        }
+    });	
+  }
+  catch(err)
+  {
+      alert("Error:" + err.message)
+  }
+}
+</script>
+<ul class="item_list" id="ListResult">
+<div id="Results"></div>
+<ul>
+<div style="display:none">
+    <li>    
+      <div id="SearchResult">
+        <a href="product.html?productid={{ProductID}}">
+        <div class="search_result">
+            <div class="listimgbg">
+                <div class="listimg">
+                    <img src="{{SmallImageURL}}"  alt="{{Title}}"/>
+                </div>
+            </div>
+
+            <div class="block">
+                <h2>{{Title}}</h2>
+                <div>{{Description}}</div>
+          </div>
+        </div>
+      </a>
+      </div>
+    </li>
+</div>
+</body>
+</html>

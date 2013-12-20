@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>Kijubi</title>
+<link media="all" href="css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/LocalConfig.js"></script>
+<script type="text/javascript" src="phonegap.js"></script>
+
+<script type="text/javascript" >
+  function onDeviceReady() {
+      var productID = 26843;
+      if (location.search.indexOf('productid=') >= 0) {
+
+            var vars = [], hash;
+            var q = document.URL.split('?')[1];
+            if (q != undefined) {
+                q = q.split('&');
+                for (var i = 0; i < q.length; i++) {
+                    hash = q[i].split('=');
+                    vars.push(hash[1]);
+                    vars[hash[0]] = hash[1];
+                }
+            }
+
+            productID  = vars['productid'].toString()
+            alert(productID);
+      }
+
+      $(function() {
+        $.ajax({
+          type: "GET",
+          url: "https://api.kijubi.com/api/products?accesstoken=" + accessToken + "&productid=" + productID,
+          data: "{}",
+
+          dataType: "json",
+          success: function(response) {
+            $('#Title').html(response.Title);
+            $('#Description').html(response.Description);
+          }
+        });
+      });
+  }
+
+  $(document).ready(function() {
+      document.addEventListener("deviceready", onDeviceReady, true);       
+  });
+</script>
+<h1 id="Title"></h1>
+<div id="Description"></div>
+<br>
+<a href="index.html">Home</a>
+</body>
+</html>
